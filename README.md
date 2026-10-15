@@ -1,4 +1,6 @@
 # Windows 11 Language-Theme Switcher 🔄🎨
+*Developed with the assistance of **Google Gemini AI**.*
+
 
 Любительский скрипт автоматизации для **Windows 11 (24H2 / 26H2+)**, который синхронизирует тему оформления операционной системы с текущей языковой раскладкой клавиатуры.
 
