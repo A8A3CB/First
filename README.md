@@ -6,7 +6,7 @@
 
 <img width="800" height="449" alt="lt" src="https://github.com/user-attachments/assets/c35d68fa-d211-416d-9b44-46397c676788" />
 
----
+
 
 ## 📥 Как скачать проект
 
