@@ -1,58 +1,51 @@
+Почитать описание на русском языке можно [здесь](README.ru.md)
 # Windows 11 Language-Theme Switcher 🔄🎨
-*Developed with the assistance of **Google Gemini AI**.*
 
+*Developed with the assistance of Google Gemini AI.*
 
-Любительский скрипт автоматизации для **Windows 11 (24H2 / 26H2+)**, который синхронизирует тему оформления операционной системы с текущей языковой раскладкой клавиатуры.
+A lightweight automation script for **Windows 11 (24H2 / 26H2+)** that synchronizes the operating system's visual theme (Light/Dark) with your current keyboard layout.
 
-Скрипт работает на низком уровне системы и мгновенно реагирует на переключение раскладки, не нагружая процессор и игнорируя то, в каком приложении вы сейчас работаете.
+The script operates at a low system level, instantly responding to layout changes without putting any measurable load on the CPU, regardless of which application you are currently using.
 
-<img width="800" height="449" alt="lt" src="https://github.com/user-attachments/assets/c35d68fa-d211-416d-9b44-46397c676788" />
+## 📥 How to Download
 
+You don't need to copy the code manually to download the script:
 
+1. Click the green **Code** button in the top right corner of this page.
+2. Select **Download ZIP** from the dropdown menu.
+3. Extract the downloaded archive to a convenient location on your computer.
 
-## 📥 Как скачать проект
+## 📦 Installation & Autostart Guide
 
-Чтобы скачать скрипт, не нужно копировать код вручную:
-1. Нажмите на зелёную кнопку **`Code`** в правом верхнем углу этой страницы.
-2. В выпадающем меню выберите **`Download ZIP`**.
-3. Распакуйте скачанный архив в удобное место на вашем компьютере.
+1. Extract the `StartSwitcher.cmd` and `EnRuSwitcher.ps1` files into the same folder.
+2. Right-click on the **StartSwitcher.cmd** file and select **Create shortcut**.
+3. Press **Win + R**, type `shell:startup`, and hit **Enter** (this opens the Windows Startup folder).
+4. Move the newly created shortcut into this folder.
+5. Run the script by double-clicking the shortcut.
 
----
+*The script will now run in the background and will automatically launch every time you boot your PC.*
 
-## 📦 Инструкция по установке и автозапуску
+## 🖥 System Requirements
 
-1. Распакуйте файлы `StartSwitcher.cmd` и `EnRuSwitcher.ps1` в одну папку.
-2. Кликните правой кнопкой мыши по файлу **`StartSwitcher.cmd`** и выберите **Создать ярлык**.
-3. Нажмите комбинацию клавиш **`Win + R`**, введите команду `shell:startup` и нажмите **Enter** (откроется папка автозагрузки Windows).
-4. Переместите созданный ярлык в эту папку.
-5. Запустите скрипт двойным кликом по ярлыку. 
+* **OS:** Windows 11 (Tested on versions 24H2 and 26H2)
+* **Interpreter:** **PowerShell 7.6.7+** (External stable version; the built-in Windows PowerShell 5.1 is not supported).
 
-*Теперь скрипт работает в фоновом режиме и будет автоматически запускаться при каждом включении компьютера.*
+> [!WARNING]
+> This script is an amateur development and has not been tested on a wide range of PC configurations. For safety reasons, **make sure to create a System Restore Point** before running it for the first time:
+> Press **Win + R** ➔ type `systempropertiesprotection` ➔ click the **"Create..."** button.
 
----
+📌 **Operation & Synchronization Details:**
+The script is designed as an ultra-lightweight trigger. To ensure maximum performance and zero CPU overhead, it does not constantly monitor the active Windows language API. Instead, it listens exclusively for the **Left Shift + Left Alt** key combination and inverts the current theme state (0 ➔ 1 / 1 ➔ 0).
 
-## 🖥️ Системные требования
+*Important Caveat:* Since the script does not actively "know" which language is currently active in the system, the initial theme state upon PC boot depends entirely on the mode you were in when you shut down the computer.
 
-* **ОС:** Windows 11 (Протестировано на версиях 24H2 и 26H2)
-* **Интерпретатор:** **PowerShell 7.6.7+** (Внешняя стабильная версия, встроенный в Windows PowerShell 5.1 не поддерживается).
+*Recommendation:* To ensure the theme matches your default language on the next OS startup, switch to your default language before shutting down or locking your PC (so the trigger returns the theme to its baseline state).
 
-⚠️ **ВНИМАНИЕ:** Скрипт является любительской разработкой и не тестировался на большом количестве конфигураций. Из соображений безопасности перед первым запуском **обязательно создайте точку восстановления системы**:
-> Нажмите `Win + R` ➔ введите `systempropertiesprotection` ➔ нажмите кнопку **«Создать»**.
+## ⚙ Technical Overview (How it works)
 
-📌 Особенности работы и синхронизации:
-Скрипт спроектирован как ультра-легкий триггер. Ради максимального быстродействия и нулевой нагрузки на процессор в коде отсутствует тяжелый мониторинг активного языка Windows. Скрипт реагирует исключительно на нажатие клавиш Left Shift + Left Alt и инвертирует текущую тему (0 ➔ 1 / 1 ➔ 0).
+The script's logic is fully open-source and operates in two stages:
 
-*Важный нюанс: Поскольку скрипт не «знает», какой язык включен в системе в данный момент, начальное состояние темы при загрузке ПК зависит от того, в каком режиме вы выключили компьютер.*
+1. **Global Keyboard Hook (`SetWindowsHookEx`):** The script intercepts the **Left Shift + Left Alt** key combination at a low level. It does not interfere with Windows changing the input language itself.
+2. **Registry Inversion:** Once the keypress is captured, the script instantly accesses the registry branch `HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize` and toggles the `AppsUseLightTheme` and `SystemUsesLightTheme` flags to their opposite values (from 0 to 1 or vice versa). Finally, it sends a broadcast signal via `SendMessageTimeout` to force all open windows to refresh their UI instantly.
 
-> Рекомендация: Чтобы при следующем старте ОС тема совпадала с вашим языком по умолчанию, перед выключением ПК или блокировкой экрана переключитесь на этот язык (чтобы триггер вернул тему в исходное состояние).
-
----
-
-## ⚙️ Техническое описание (Как это устроено?)
-
-Логика работы полностью открыта и состоит из двух этапов:
-
-1. **Глобальный хук клавиатуры (`SetWindowsHookEx`):** Скрипт на низком уровне отслеживает нажатие комбинации клавиш `Left Shift + Left Alt`. Он никак не мешает самой Windows менять язык ввода.
-2. **Инверсия параметров реестра:** При фиксации нажатия скрипт мгновенно обращается к ветке реестра `HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize` и меняет флаги параметров `AppsUseLightTheme` и `SystemUsesLightTheme` на противоположные (с 0 на 1 или наоборот), после чего отправляет широковещательный сигнал `SendMessageTimeout` для обновления интерфейса всех окон.
-
-Настроить какая именно тема (светлая или тёмная) привязывается к конкретному языку можно в стандартных параметрах персонализации Windows.
+You can customize which theme (Light or Dark) binds to a specific language using the standard Windows Personalization settings.
