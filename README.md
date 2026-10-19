@@ -41,7 +41,7 @@ The script is designed as an ultra-lightweight trigger. To ensure maximum perfor
 
 *Important Caveat:* Since the script does not actively "know" which language is currently active in the system, the initial theme state upon PC boot depends entirely on the mode you were in when you shut down the computer.
 
-*Recommendation:* To ensure the theme matches your default language on the next OS startup, switch to your default language before shutting down or locking your PC (so the trigger returns the theme to its baseline state).
+*Recommendation:* To ensure the OS theme matches your default language on the next startup, switch to that language before shutting down your PC or locking the screen (this allows the trigger to reset the theme). Additionally, you can map a light or dark theme to a specific language simply by switching languages in the system tray.
 
 ## ⚙ Technical Overview (How it works)
 
@@ -49,5 +49,3 @@ The script's logic is fully open-source and operates in two stages:
 
 1. **Global Keyboard Hook (`SetWindowsHookEx`):** The script intercepts the **Left Shift + Left Alt** key combination at a low level. It does not interfere with Windows changing the input language itself.
 2. **Registry Inversion:** Once the keypress is captured, the script instantly accesses the registry branch `HKCU\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize` and toggles the `AppsUseLightTheme` and `SystemUsesLightTheme` flags to their opposite values (from 0 to 1 or vice versa). Finally, it sends a broadcast signal via `SendMessageTimeout` to force all open windows to refresh their UI instantly.
-
-You can customize which theme (Light or Dark) binds to a specific language using the standard Windows Personalization settings.
