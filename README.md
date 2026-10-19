@@ -7,6 +7,8 @@ A lightweight automation script for **Windows 11 (24H2 / 26H2+)** that synchroni
 
 The script operates at a low system level, instantly responding to layout changes without putting any measurable load on the CPU, regardless of which application you are currently using.
 
+<img width="800" height="449" alt="lt" src="https://github.com/user-attachments/assets/c35d68fa-d211-416d-9b44-46397c676788" />
+
 ## 📥 How to Download
 
 You don't need to copy the code manually to download the script:
